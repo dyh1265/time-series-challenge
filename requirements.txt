@@ -3,5 +3,5 @@ numpy==1.23.5
 scikit-learn
 matplotlib
 flask
-gunicorn
-pickle==1.6.1
+gunicorn==22.0.0
+pickle
