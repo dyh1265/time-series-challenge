@@ -20,11 +20,10 @@ import keras
 # Load the prepared data
 from prepare_data import prepare_accident_data
 
+
 def create_model():
     setSeed(42)  # Set a seed for reproducibility
     model = Sequential([
-        Dense(10, activation='relu',  kernel_regularizer='l2'),
-        Dropout(0.2),
         Dense(10, activation='relu', kernel_regularizer='l2'),
         Dense(1, activation='linear')
     ])
@@ -111,3 +110,29 @@ with open('models/scaler_y.pkl', 'wb') as f:
     pickle.dump(scaler_y, f)
 # Save the training history
 model.save('models/model.keras')
+
+
+# Load model
+model = tf.keras.models.load_model('models/model.keras')
+
+# Convert to TFLite
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
+tflite_model = converter.convert()
+
+# Save TFLite model
+with open('model.tflite', 'wb') as f:
+    f.write(tflite_model)
+print("Optimized TFLite model saved to model.tflite")
+
+
+# Load the TensorFlow model
+tf_model = tf.keras.models.load_model(
+    'models/model.keras',
+    custom_objects={'mse': tf.keras.metrics.MeanSquaredError()}
+)
+pred_next_month_scaled = tf_model.predict(next_month_scaled)
+# Inverse transform the prediction
+pred_next_month = scaler_y.inverse_transform(pred_next_month_scaled)
+print(f"Predicted number of alcohol-related accidents for January 2021: {pred_next_month[0][0]}")
+print(f"Real number of alcohol-related accidents for January 2021: {y_real}")
