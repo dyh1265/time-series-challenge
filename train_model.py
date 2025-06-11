@@ -16,8 +16,21 @@ import tensorflow as tf
 import random
 import pickle
 from utils.utils import setSeed
+import keras
 # Load the prepared data
 from prepare_data import prepare_accident_data
+
+def create_model():
+    setSeed(42)  # Set a seed for reproducibility
+    model = Sequential([
+        Dense(10, activation='relu',  kernel_regularizer='l2'),
+        Dropout(0.2),
+        Dense(10, activation='relu', kernel_regularizer='l2'),
+        Dense(1, activation='linear')
+    ])
+    # Compile the model
+    model.compile(optimizer='adam', loss='mse')
+    return model
 
 # Prepare the data
 _, y_real, data = prepare_accident_data('data/monatszahlen2505_verkehrsunfaelle_06_06_25.csv')
@@ -55,14 +68,7 @@ y_scaled = scaler_y.fit_transform(y.reshape(-1, 1))
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_scaled, test_size=0.2, random_state=42)
 # Build the model
 setSeed(42)  # Set a seed for reproducibility
-model = Sequential([
-    Dense(10, activation='relu',  kernel_regularizer='l2'),
-    Dropout(0.2),
-    Dense(10, activation='relu', kernel_regularizer='l2'),
-    Dense(1, activation='linear')
-])
-# Compile the model
-model.compile(optimizer='adam', loss='mse')
+model = create_model()
 # Early stopping to prevent overfitting
 early_stopping = EarlyStopping(monitor='val_loss', patience=50, restore_best_weights=True)
 # Train the model
@@ -98,11 +104,10 @@ print(f"Real number of alcohol-related accidents for January 2021: {y_real}")
 rmse = root_mean_squared_error([y_real], pred_next_month)
 print(f"RMSE for the prediction of January 2021: {rmse}")
 
-# Save the model
-model.save('models/alcohol_accidents_prediction_model.h5')
 # Save the scalers
 with open('models/scaler_X.pkl', 'wb') as f:
     pickle.dump(scaler_X, f)
 with open('models/scaler_y.pkl', 'wb') as f:
     pickle.dump(scaler_y, f)
 # Save the training history
+model.save('models/model.keras')
