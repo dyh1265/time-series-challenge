@@ -7,9 +7,6 @@ def prepare_accident_data(csv_path, year_limit=2020):
     # Remove data records after year_limit to create a consistent dataset for training your model
     data = original_data[original_data['JAHR'] <= year_limit]
 
-    # Optionally, get data for the next year (not used in pivot)
-    data_next_year = original_data[original_data['JAHR'] == year_limit + 1]
-
     # Filter the dataset to include only rows where 'MONAT' is 'Summe'
     sum_value_dataset = data[data['MONAT'] == 'Summe']
     sum_value_dataset = sum_value_dataset[sum_value_dataset['AUSPRAEGUNG'] == 'insgesamt']

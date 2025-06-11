@@ -4,3 +4,4 @@ scikit-learn
 matplotlib
 flask
 gunicorn
+pickle==1.6.1
