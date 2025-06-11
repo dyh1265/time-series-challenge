@@ -1,7 +1,7 @@
 pandas 
-numpy==1.23.5
+numpy
 scikit-learn
 matplotlib
 flask
-gunicorn==22.0.0
+gunicorn
 pickle
