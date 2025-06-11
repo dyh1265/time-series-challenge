@@ -1,17 +1,13 @@
 from flask import Flask, request, jsonify
 import pickle
-import pandas as pd
-import tensorflow as tf
 import numpy as np
 import os
 
 app = Flask(__name__)
 
-# Load the TensorFlow model
-tf_model = tf.keras.models.load_model(
-    'models/model.keras',
-    custom_objects={'mse': tf.keras.metrics.MeanSquaredError()}
-)
+# Load the linear regression model
+with open('models/linear_model.pkl', 'rb') as f:
+    model = pickle.load(f)
 
 # Load scalers
 with open('models/scaler_X.pkl', 'rb') as f:
@@ -43,13 +39,13 @@ def predict():
         input_data_scaled = scaler_X.transform(input_data)
 
         # Predict using the loaded model
-        prediction_scaled = tf_model.predict(input_data_scaled)
+        prediction_scaled = model.predict(input_data_scaled)
 
         # Inverse transform the prediction
-        prediction = scaler_y.inverse_transform(prediction_scaled)
+        prediction = scaler_y.inverse_transform(prediction_scaled.reshape(-1, 1))
 
         # Return prediction as a list for JSON serialization
-        return jsonify({'prediction': prediction})
+        return jsonify({'prediction': prediction.tolist()})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400
