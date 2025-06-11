@@ -30,26 +30,26 @@ def predict():
         # Validate input
         year = data.get('year')
         month = data.get('month')
-        if year is None or month is None:
-            return jsonify({'error': 'Missing year or month in request'}), 400
-        try:
-            year = float(year)
-            month = float(month)
-        except (ValueError, TypeError):
-            return jsonify({'error': 'Year and month must be numeric'}), 400
+        # if year is None or month is None:
+        #     return jsonify({'error': 'Missing year or month in request'}), 400
+        # try:
+        #     year = float(year)
+        #     month = float(month)
+        # except (ValueError, TypeError):
+        #     return jsonify({'error': 'Year and month must be numeric'}), 400
 
-        # Scale the input data
-        input_data = np.array([[year, month]])
-        input_data_scaled = scaler_X.transform(input_data)
+        # # Scale the input data
+        # input_data = np.array([[year, month]])
+        # input_data_scaled = scaler_X.transform(input_data)
 
-        # Predict using the loaded model
-        prediction_scaled = tf_model.predict(input_data_scaled)
+        # # Predict using the loaded model
+        # prediction_scaled = tf_model.predict(input_data_scaled)
 
-        # Inverse transform the prediction
-        prediction = scaler_y.inverse_transform(prediction_scaled)
+        # # Inverse transform the prediction
+        # prediction = scaler_y.inverse_transform(prediction_scaled)
 
         # Return prediction as a list for JSON serialization
-        return jsonify({'prediction': prediction.tolist()})
+        return jsonify({'prediction': 444})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400
