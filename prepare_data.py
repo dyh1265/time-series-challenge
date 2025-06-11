@@ -29,7 +29,6 @@ def prepare_accident_data(csv_path, year_limit=2020):
     # Only intersted in insgesamt
     first_month_data = first_month_data[first_month_data['AUSPRAEGUNG'] == 'insgesamt']
 
-    return pivot_data, y_real, first_month_data, data
+    return pivot_data, y_real, data
 
-pivot_data, y_real, first_month_data, data = prepare_accident_data('data/monatszahlen2505_verkehrsunfaelle_06_06_25.csv')
-print(first_month_data.head())
+pivot_data, y_real, data = prepare_accident_data('data/monatszahlen2505_verkehrsunfaelle_06_06_25.csv')
